@@ -2,6 +2,7 @@
 pragma solidity 0.8.17;
 
 // 1.待生成的合约
+// tips: 无需部署
 contract Base {
     uint public x = 12345;
 
@@ -15,6 +16,7 @@ interface IBase {
 }
 
 // 2.中间件，仅用于生成creationCode用，作为引用Base库的主体
+// tips: 需要部署
 contract Middleware {
     bytes public createCode;
 
@@ -33,6 +35,7 @@ interface IMiddleware{
 }
 
 // 3.工厂合约
+// tips: 需要部署
 contract Factory {
     function createDSalted(address MiddlewareAddress) external returns(address base){
         bytes memory bytecode = IMiddleware(MiddlewareAddress).createCode();
