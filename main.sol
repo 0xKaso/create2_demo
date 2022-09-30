@@ -45,9 +45,11 @@ contract Factory {
 
         assembly {
             base := create2(0, add(bytecode, 32), mload(bytecode), salt)
+            if iszero(extcodesize(base)) {
+                revert(0, 0)
+            }
         }
 
-        require(base != address(0), "ERR_CREATE");
         IBase(base).init();
         counter++;
     }
