@@ -37,15 +37,19 @@ interface IMiddleware{
 // 3.工厂合约
 // tips: 需要部署
 contract Factory {
-    function createDSalted(address MiddlewareAddress) external returns(address base){
+    uint private counter;
+
+    function create(address MiddlewareAddress) external returns(address base){
         bytes memory bytecode = IMiddleware(MiddlewareAddress).createCode();
-        bytes32 salt = keccak256(abi.encodePacked(block.timestamp));
+        bytes32 salt = keccak256(abi.encodePacked(counter++));
 
         assembly {
             base := create2(0, add(bytecode, 32), mload(bytecode), salt)
         }
 
+        require(base != address(0), "ERR_CREATE");
         IBase(base).init();
+        counter++;
     }
 }
 
